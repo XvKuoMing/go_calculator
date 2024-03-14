@@ -23,20 +23,20 @@ func parse_and_calculate(t string) string {
 	parsed := strings.Fields(parse(t)) // разделяем строчку по пробелам
 	if len(parsed) != 3 {
 		if len(parsed) > 3 {
-			panic("only 2 operands and 1 operator are awaited")
+			panic("Программа принимает только два числа и одну операцию между ними")
 		}
 		if len(parsed) == 1 {
-			panic("no ariphmetic expression has been given")
+			panic("Не было дано арифметическое выражение")
 		}
 		if len(parsed) == 2 {
-			panic("Incomplete expression")
+			panic("Не полное арифметического выражения")
 		}
 	}
 
-	// declaring variables
+	// выносим переменные
 	var operation string = parsed[1]
 
-	// checking rome numbers
+	// проверяем на римские числа
 	var num1_is_rome bool = is_rome_number(parsed[0])
 	var num2_is_rome bool = is_rome_number(parsed[2])
 	var num1 int = 0
@@ -44,9 +44,9 @@ func parse_and_calculate(t string) string {
 
 	if num1_is_rome || num2_is_rome {
 		if num1_is_rome != num2_is_rome {
-			panic("if rome number is given, other number must also be a rome number")
+			panic("Если дано римское число, то другое число тоже должно быть римским")
 		} else {
-			// translatin rome number into int
+			// переводим римское число в арабское
 			num1 = rome2int(parsed[0])
 			num2 = rome2int(parsed[2])
 		}
@@ -58,7 +58,7 @@ func parse_and_calculate(t string) string {
 	}
 
 	var res int
-	// performing calculations
+	// считаем
 	if (0 < num1 && num1 <= 10) && (0 < num2 && num2 <= 10) {
 
 		if operation == string("+") {
@@ -77,23 +77,24 @@ func parse_and_calculate(t string) string {
 		}
 
 		if num1_is_rome {
-			return int2rome(res)
+			return int2rome(res) // для римских цифр ответ также выводим в римских цифрах
 		} else {
 			return fmt.Sprint(res)
 		}
 
 	} else {
-		panic("Both numbers must be more than 0 and less (or equal) than 10")
+		panic("оба числа должны быть больше нуля и меньше (или равно) 10")
 	}
 }
 
 func parse(expr string) string {
-	// парсит строчку, проверяет ее синтакси и удовлетворению условию (2 операнда 1 операнд)
+	// парсит строчку, проверяет ее синтаксис и удовлетворению условию (2 операнда 1 операнд)
 	// и приводит к единому формату: число пробел операнд пробел число
+	// эта функция нужна для того, чтобы успешно парсить такие правильные но кривые конструкции: 1+1, 1 +1, 1+ 1
 	var charnum string = "0123456789IVX" // все допустимые числа
 	var parsed string
 	var need_number bool = true
-	expr = strings.ReplaceAll(expr, " ", "") // deleting all whitespaces
+	expr = strings.ReplaceAll(expr, " ", "") // удаляем все пробелы
 	for index, char := range expr {
 		if need_number {
 			if strings.Contains(charnum, string(char)) {
@@ -101,6 +102,8 @@ func parse(expr string) string {
 				if (len(string(expr)) > index+1) && !strings.Contains(charnum, string(expr[index+1])) {
 					need_number = false
 				}
+			} else {
+				panic("Ожидалось число, а получено " + string(char))
 			}
 		} else {
 			if strings.Contains("+-/*", string(char)) {
@@ -126,9 +129,9 @@ func is_rome_number(r string) bool {
 }
 
 func rome2int(r string) int {
-	// translation of rome number to arabic
+	// переводим римское число в арабское
 	if strings.Contains(r, "IIII") {
-		panic("Incorrect romanian numeral: IIII")
+		panic("Не правильное римское число: IIII")
 	}
 
 	var n int = 0
@@ -148,15 +151,15 @@ func rome2int(r string) int {
 }
 
 func int2rome(m int) string {
-	//translation of integer into rome
-	// note that out maximum value if 100
+	// переводим арабское число в римское
+	// заметим что наше максимальное число = 100 (10*10)
 	if m <= 0 {
-		panic("the result is non-positive number, cannot calculate using romanian numerals")
+		panic("результат является отрицательным или нулевым, такого римского числа нет")
 	}
 
 	num := [9]int{100, 90, 50, 40, 10, 9, 5, 4, 1}
 	sym := [9]string{"C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
-	var res string // empty string
+	var res string // пустая строка
 	var count int
 	for index, div := range num {
 		count = m / div
