@@ -28,9 +28,7 @@ func parse_and_calculate(t string) string {
 		if len(parsed) == 1 {
 			panic("Не было дано арифметическое выражение")
 		}
-		if len(parsed) == 2 {
-			panic("Не полное арифметического выражения")
-		}
+
 	}
 
 	// выносим переменные
