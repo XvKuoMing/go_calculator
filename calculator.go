@@ -12,7 +12,7 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Println("Введите арифметическую операцию")
+		fmt.Println("Введите арифметическое выражение")
 		text, _ := reader.ReadString('\n')
 		fmt.Println(parse_and_calculate(text))
 	}
